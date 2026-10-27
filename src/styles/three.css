@@ -1,0 +1,169 @@
+/* ---------------------------------------------------------------------------
+   WebGL layer: the DOM half of the Drei <Html> annotations and the static
+   poster used when WebGL is unavailable.
+   --------------------------------------------------------------------------- */
+
+.part-label,
+.note-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 4px 2px;
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: rgba(239, 233, 221, 0.82);
+  opacity: 0;
+  animation: annotation-in 0.7s var(--ease) 0.45s forwards;
+}
+
+.part-label--left,
+.note-label--left {
+  flex-direction: row-reverse;
+  transform: translate3d(-100%, 0, 0);
+}
+
+.part-label__dot,
+.note-label__dot {
+  width: 4px;
+  height: 4px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--amber-bright);
+  box-shadow: 0 0 0 3px rgba(192, 138, 78, 0.16);
+}
+
+.part-label__line,
+.note-label__line {
+  display: block;
+  width: 22px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(239, 233, 221, 0.5),
+    rgba(239, 233, 221, 0.14)
+  );
+}
+
+.part-label--left .part-label__line,
+.note-label--left .note-label__line {
+  background: linear-gradient(
+    270deg,
+    rgba(239, 233, 221, 0.5),
+    rgba(239, 233, 221, 0.14)
+  );
+}
+
+.part-label__text b,
+.note-label__text b {
+  margin-right: 8px;
+  font-weight: 500;
+  color: var(--amber);
+}
+
+@keyframes annotation-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* The left-hand variant keeps its horizontal offset while fading in. */
+
+.part-label--left,
+.note-label--left {
+  animation-name: annotation-in-left;
+}
+
+@keyframes annotation-in-left {
+  from {
+    opacity: 0;
+    transform: translate3d(-100%, 8px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+/* Static poster ----------------------------------------------------------- */
+
+.fallback {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  padding: 12vh 0 10vh;
+  pointer-events: none;
+  animation: fallback-in 1.2s var(--ease) both;
+}
+
+.fallback__glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(46% 54% at 62% 46%, rgba(126, 78, 38, 0.22), transparent 72%),
+    radial-gradient(80% 70% at 50% 96%, rgba(0, 0, 0, 0.6), transparent 70%);
+}
+
+.fallback__bottle {
+  position: relative;
+  height: min(76vh, 700px);
+  width: auto;
+  filter: drop-shadow(0 40px 60px rgba(0, 0, 0, 0.55));
+}
+
+.fallback__note {
+  position: absolute;
+  bottom: 5vh;
+  left: 50%;
+  transform: translate3d(-50%, 0, 0);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+  text-align: center;
+}
+
+@keyframes fallback-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* Part annotations belong to the desktop composition: at tablet and phone sizes
+   the flacon shares the frame with the copy, so the DOM parts list carries the
+   labels instead. */
+
+@media (max-width: 1099px) {
+  .part-label,
+  .note-label {
+    display: none;
+  }
+
+  .fallback__bottle {
+    height: min(60vh, 520px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .part-label,
+  .note-label,
+  .fallback {
+    animation: none;
+    opacity: 1;
+  }
+}
